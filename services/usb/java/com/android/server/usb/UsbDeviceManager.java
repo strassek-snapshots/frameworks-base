@@ -947,23 +947,25 @@ public class UsbDeviceManager {
                     }
 
                     mHideUsbNotification = false;
-                    while (devices.hasNext()) {
-                        Map.Entry pair = (Map.Entry) devices.next();
-                        if (DEBUG) {
-                            Slog.i(TAG, pair.getKey() + " = " + pair.getValue());
-                        }
-                        UsbDevice device = (UsbDevice) pair.getValue();
-                        int configurationCount = device.getConfigurationCount() - 1;
-                        while (configurationCount >= 0) {
-                            UsbConfiguration config = device.getConfiguration(configurationCount);
-                            configurationCount--;
-                            int interfaceCount = config.getInterfaceCount() - 1;
-                            while (interfaceCount >= 0) {
-                                UsbInterface intrface = config.getInterface(interfaceCount);
-                                interfaceCount--;
-                                if (sBlackListedInterfaces.contains(intrface.getInterfaceClass())) {
-                                    mHideUsbNotification = true;
-                                    break;
+                    if (mHostConnected) {
+                        while (devices.hasNext()) {
+                            Map.Entry pair = (Map.Entry) devices.next();
+                            if (DEBUG) {
+                                Slog.i(TAG, pair.getKey() + " = " + pair.getValue());
+                            }
+                            UsbDevice device = (UsbDevice) pair.getValue();
+                            int configurationCount = device.getConfigurationCount() - 1;
+                            while (configurationCount >= 0) {
+                                UsbConfiguration config = device.getConfiguration(configurationCount);
+                                configurationCount--;
+                                int interfaceCount = config.getInterfaceCount() - 1;
+                                while (interfaceCount >= 0) {
+                                    UsbInterface intrface = config.getInterface(interfaceCount);
+                                    interfaceCount--;
+                                    if (sBlackListedInterfaces.contains(intrface.getInterfaceClass())) {
+                                        mHideUsbNotification = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
