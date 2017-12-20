@@ -794,9 +794,10 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
                     new NetworkRequest.Builder().build(), mNetworkCallback);
 
             mUsageStats.addAppIdleStateChangeListener(new AppIdleStateChangeListener());
+        } finally {
             // tell systemReady() that the service has been initialized
             initCompleteSignal.countDown();
-        } finally {
+
             // Restore the default priority after init is done
             Process.setThreadPriority(oldPriority);
             Trace.traceEnd(Trace.TRACE_TAG_NETWORK);
