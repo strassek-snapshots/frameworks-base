@@ -180,6 +180,12 @@ public abstract class FileSystemProvider extends DocumentsProvider {
                     throw new IllegalStateException("Failed to touch " + file);
                 }
                 childId = getDocIdForFile(file);
+                final File visibleFile = getFileForDocId(childId, true);
+                // If the external storage's mountFlag is not visible, the visibleFile will be null.
+                if (visibleFile != null) {
+                    Log.d(TAG, "start scanFile");
+                    scanFile(visibleFile);
+                }
             } catch (IOException e) {
                 throw new IllegalStateException("Failed to touch " + file + ": " + e);
             }
