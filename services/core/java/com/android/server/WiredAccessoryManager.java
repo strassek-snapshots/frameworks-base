@@ -148,6 +148,10 @@ final class WiredAccessoryManager implements WiredAccessoryCallbacks {
                 case SW_MICROPHONE_INSERT_BIT:
                     headset = BIT_HEADSET;
                     break;
+                
+                case SW_HEADPHONE_INSERT_BIT | SW_LINEOUT_INSERT_BIT:
+                    headset = BIT_HEADSET;
+                    break;
 
                 default:
                     headset = 0;
