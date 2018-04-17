@@ -52,8 +52,10 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -115,6 +117,7 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
     private static final String GLOBAL_ACTION_KEY_VOICEASSIST = "voiceassist";
     private static final String GLOBAL_ACTION_KEY_ASSIST = "assist";
     private static final String GLOBAL_ACTION_KEY_RESTART = "restart";
+    private static final String GLOBAL_ACTION_KEY_SLEEP = "sleep";
 
     private final Context mContext;
     private final GlobalActionsManager mWindowManagerFuncs;
@@ -317,6 +320,8 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
                 mItems.add(getAssistAction());
             } else if (GLOBAL_ACTION_KEY_RESTART.equals(actionKey)) {
                 mItems.add(new RestartAction());
+            } else if (GLOBAL_ACTION_KEY_SLEEP.equals(actionKey)) {
+                mItems.add(new SleepAction());
             } else {
                 Log.e(TAG, "Invalid global action key " + actionKey);
             }
@@ -415,6 +420,36 @@ class GlobalActionsDialog implements DialogInterface.OnDismissListener, DialogIn
         }
     }
 
+    private final class SleepAction extends SinglePressAction implements LongPressAction {
+        private SleepAction() {
+            super(R.drawable.ic_restart, R.string.global_action_sleep);
+        }
+
+        @Override
+        public boolean onLongPress() {
+            PowerManager mPowerManager = (PowerManager)
+                   mContext.getSystemService(Context.POWER_SERVICE);
+            mPowerManager.goToSleep(SystemClock.uptimeMillis());
+            return true;
+        }
+
+        @Override
+        public boolean showDuringKeyguard() {
+            return true;
+        }
+
+        @Override
+        public boolean showBeforeProvisioning() {
+            return true;
+        }
+
+        @Override
+        public void onPress() {
+            PowerManager mPowerManager = (PowerManager)
+                   mContext.getSystemService(Context.POWER_SERVICE);
+            mPowerManager.goToSleep(SystemClock.uptimeMillis());
+        }
+    }
 
     private class BugReportAction extends SinglePressAction implements LongPressAction {
 
